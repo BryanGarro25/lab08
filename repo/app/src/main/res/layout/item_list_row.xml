@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:orientation="vertical"
+    android:focusable="true">
+
+    <RelativeLayout
+        android:id="@+id/view_background_edit"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/bg_row_background_edit"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/edit_icon"
+            android:layout_width="@dimen/ic_delete"
+            android:layout_height="@dimen/ic_delete"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginStart="@dimen/padd_10"
+            android:src="@drawable/ic_edit_white"
+            android:contentDescription="TODO" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/padd_10"
+            android:layout_toRightOf="@id/edit_icon"
+            android:text="@string/edit"
+            android:textColor="#fff"
+            android:textSize="13dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/view_background_delete"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/description"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/delete_icon"
+            android:layout_width="@dimen/ic_delete"
+            android:layout_height="@dimen/ic_delete"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/padd_20"
+            android:src="@drawable/ic_menu_view" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/padd_10"
+            android:layout_toLeftOf="@id/delete_icon"
+            android:text="@string/ver"
+            android:textColor="#fff"
+            android:textSize="13sp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/view_foreground"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="@android:color/white"
+        android:padding="@dimen/padd_10">
+
+        <TextView
+            android:id="@+id/titleFirstLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:maxLines="1"
+            android:textColor="@color/item_name"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/titleSecLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/padd_10"
+            android:layout_toEndOf="@id/titleFirstLbl"
+            android:ellipsize="end"
+            android:fontFamily="sans-serif-medium"
+            android:maxLines="1"
+            android:textColor="@color/description"
+            android:textSize="17sp"
+            tools:ignore="RelativeOverlap" />
+
+        <TextView
+            android:id="@+id/descriptionLbl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/titleFirstLbl"
+            android:layout_marginTop="5dp"
+            android:textColor="@color/description"
+            android:textSize="12sp" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/capturedImage"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+
+            android:layout_alignParentEnd="true"
+
+            android:layout_marginEnd="32dp"
+            android:src="@drawable/danny"
+            app:civ_border_color="#FF000000"
+            app:civ_border_width="1dp" />
+    </RelativeLayout>
+</FrameLayout>

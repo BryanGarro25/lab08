@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Lab08</string>
+    <string name="delete">ELIMINAR</string>
+    <string name="ver">VER</string>
+    <string name="edit">EDITAR</string>
+    <string name="titleUsuarios">Usuarios</string>
+</resources>
