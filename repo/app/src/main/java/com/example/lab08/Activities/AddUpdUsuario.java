@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.os.Environment;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.EditText;
@@ -31,7 +32,7 @@ public class AddUpdUsuario extends AppCompatActivity {
         setContentView(R.layout.activity_add_upd_usuario);
 
         Bundle extras = getIntent().getExtras();
-        nombreFLD = findViewById(R.id.NombreFLD);
+        /*nombreFLD = findViewById(R.id.NombreFLD);
         cedulaFLD = findViewById(R.id.CedulaFLD);
         emailFLD = findViewById(R.id.EmailFLD);
         telefonoFLD = findViewById(R.id.TelefonoFLD);
@@ -46,8 +47,10 @@ public class AddUpdUsuario extends AppCompatActivity {
                 cedulaFLD.setText(actual.getNombre());
                 emailFLD.setText(actual.getCorreo());
                 telefonoFLD.setText(actual.getTelefono());
-                byte[] byteArray = actual.getFoto();
-                Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                //byte[] byteArray = actual.getFoto();
+                //Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                String path = Environment.getExternalStorageDirectory() + "imageBitmap" + ".png";
+                Bitmap bmp = BitmapFactory.decodeFile(path);
                 imageFLD.setImageBitmap(bmp);
                 confirmBTN.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -63,6 +66,6 @@ public class AddUpdUsuario extends AppCompatActivity {
                     }
                 });
             }
-        }
+        }*/
     }
 }

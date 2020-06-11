@@ -14,6 +14,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.example.lab08.Adapter.UsuarioAdapter;
 import com.example.lab08.LogicaNegocio.Usuario;
 
+import java.io.FileNotFoundException;
+import java.io.IOException;
+
 
 public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback{
     private RecyclerItemTouchHelperListener listener;
@@ -136,14 +139,18 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback{
     }
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-        listener.onSwiped(viewHolder, direction, viewHolder.getAdapterPosition());
+        try {
+            listener.onSwiped(viewHolder, direction, viewHolder.getAdapterPosition());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
     @Override
     public int convertToAbsoluteDirection(int flags, int layoutDirection) {
         return super.convertToAbsoluteDirection(flags, layoutDirection);
     }
     public interface RecyclerItemTouchHelperListener {
-        void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position);
+        void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) throws IOException;
         void onItemMove(int source, int target);
     }
 }

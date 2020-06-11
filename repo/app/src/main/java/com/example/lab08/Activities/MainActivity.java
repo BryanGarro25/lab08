@@ -14,6 +14,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.lab08.Adapter.UsuarioAdapter;
 import com.example.lab08.Data.Data;
@@ -23,6 +25,7 @@ import com.example.lab08.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
@@ -39,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //this.coordinatorLayout = findViewById(R.id.coordinator_layout_usuario);
+        this.coordinatorLayout = findViewById(R.id.coordinator_layout_usuario);
 
         getSupportActionBar().setTitle(getString(R.string.titleUsuarios));
         mRecyclerView = findViewById(R.id.recycler_cursosFld);
@@ -52,12 +55,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
 
 
         fab = findViewById(R.id.AddCurso);
-        /*fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                goToAddUpdCurso();
-            }
-        });*/
+
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mRecyclerView);
         //usuariosList = new ArrayList<>();
@@ -77,37 +75,50 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     }
 
     @Override
-    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) {
-        if (direction == ItemTouchHelper.END) {
-            Usuario aux = mAdapter.getSwipedItem(viewHolder.getAdapterPosition());
+    public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) throws IOException {
+        Usuario aux = mAdapter.getSwipedItem(viewHolder.getAdapterPosition());
+        if (direction == ItemTouchHelper.START) {
+
             //send data to Edit Activity
-            Intent intent = new Intent(this, VerUsuario.class);
+            //Intent intent = new Intent(this, VerUsuario.class);
             //intent.putExtra("user", aux);
-            mAdapter.notifyDataSetChanged(); //restart left swipe view
-            startActivity(intent);
+            //mAdapter.notifyDataSetChanged(); //restart left swipe view
+            //startActivity(intent);
         } else {
-            Usuario aux = mAdapter.getSwipedItem(viewHolder.getAdapterPosition());
+
             //send data to Edit Activity
             Intent intent = new Intent(this, AddUpdUsuario.class);
             intent.putExtra("editable", true);
 
             File file = new File(Environment.getExternalStorageDirectory() + "imageBitmap" + ".png");
-            FileOutputStream fOut = new FileOutputStream(file);
-            byte[] byteArray = aux.getFoto();
-            Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 85, fOut);
-            fOut.flush();
-            fOut.close();
-
+            try (FileOutputStream fOut = new FileOutputStream(file)) {
+                byte[] byteArray = aux.getFoto();
+                Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                if (!(bitmap.compress(Bitmap.CompressFormat.PNG, 85, fOut))) {
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
+                }
+                fOut.flush();
+                fOut.close();
+            }catch (IOException e){
+                e.printStackTrace();
+            }
+            aux.setFoto(null);
             intent.putExtra("user", aux);
             mAdapter.notifyDataSetChanged(); //restart left swipe view
             startActivity(intent);
         }
     }
     @Override
-    public void onBackPressed(){}
+    public void onBackPressed(){
+
+    }
     @Override
-    public void onItemMove(int source, int target) {}
+    public void onItemMove(int source, int target) {
+        mAdapter.onItemMove(source, target);
+    }
     @Override
-    public void onContactSelected(Usuario usuario){}
+    public void onContactSelected(Usuario usuario){
+        Toast.makeText(getApplicationContext(), "Selected: " + usuario.getCedula() + ", " + usuario.getNombre(), Toast.LENGTH_LONG);
+    }
+
 }
