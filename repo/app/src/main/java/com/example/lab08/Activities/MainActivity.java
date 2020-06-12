@@ -88,10 +88,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         if (direction == ItemTouchHelper.START) {
 
             //send data to Edit Activity
-            //Intent intent = new Intent(this, VerUsuario.class);
+            Intent intent = new Intent(this, VerUsuario.class);
             //intent.putExtra("user", aux);
             //mAdapter.notifyDataSetChanged(); //restart left swipe view
-            //startActivity(intent);
+            startActivity(intent);
         } else {
 
             //send data to Edit Activity

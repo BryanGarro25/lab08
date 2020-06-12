@@ -6,4 +6,174 @@
     android:layout_height="match_parent"
     tools:context=".Activities.VerUsuario">
 
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/capturedImage"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+
+        android:layout_alignParentEnd="true"
+
+        android:layout_marginBottom="18dp"
+        android:src="@drawable/user"
+        app:civ_border_color="#FF000000"
+        app:civ_border_width="1dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.51"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.642">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="45dp"
+                android:layout_height="41dp"
+                android:layout_weight="1"
+
+                app:srcCompat="@android:drawable/ic_menu_myplaces" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/NombreFLD"
+                android:layout_width="268dp"
+                android:layout_height="41dp"
+                android:editable="false"
+                android:hint="Nombre" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="10dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView2"
+                android:layout_width="45dp"
+                android:layout_height="41dp"
+                android:layout_weight="1"
+                app:srcCompat="@android:drawable/ic_menu_myplaces" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/CedulaFLD"
+                android:layout_width="268dp"
+                android:layout_height="41dp"
+                android:editable="false"
+                android:hint="Cedula" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="45dp"
+                android:layout_height="41dp"
+                android:layout_weight="1"
+                app:srcCompat="@android:drawable/ic_dialog_email" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/EmailFLD"
+                android:layout_width="268dp"
+                android:layout_height="41dp"
+                android:editable="false"
+                android:hint="Email" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imageView4"
+                android:layout_width="45dp"
+                android:layout_height="41dp"
+                app:srcCompat="@android:drawable/ic_menu_call" />
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/TelefonoFLD"
+                android:layout_width="268dp"
+                android:layout_height="41dp"
+                android:editable="false"
+                android:hint="Telefono" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal" >
+
+            <ImageButton
+                android:id="@+id/text"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:tint="#FF9800"
+                app:srcCompat="@android:drawable/ic_dialog_email" />
+
+            <Space
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/call"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                app:srcCompat="@android:drawable/sym_action_call" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageButton
+        android:id="@+id/fotoBTN"
+        android:layout_width="77dp"
+        android:layout_height="61dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginBottom="96dp"
+        android:tint="#FF0000"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintStart_toEndOf="@+id/capturedImage"
+        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
