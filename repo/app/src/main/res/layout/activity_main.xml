@@ -30,6 +30,13 @@
         app:backgroundTint="@color/design_default_color_secondary_variant"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+<ProgressBar
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:id="@+id/progress_bar"
 
+
+
+    ></ProgressBar>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

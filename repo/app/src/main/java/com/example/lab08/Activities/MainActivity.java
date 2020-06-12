@@ -18,16 +18,23 @@ import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.util.Base64;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.lab08.Adapter.UsuarioAdapter;
+import com.example.lab08.Data.AsyncTaskManager;
 import com.example.lab08.Data.Data;
 import com.example.lab08.Helper.RecyclerItemTouchHelper;
 import com.example.lab08.LogicaNegocio.Usuario;
 import com.example.lab08.R;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -44,6 +51,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     private SearchView searchView;
     private FloatingActionButton fab;
     private Data model;
+    private ProgressBar spinner;
     private static final int PERMISSION_REQUEST_CODE = 1;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,12 +61,46 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
 
         getSupportActionBar().setTitle(getString(R.string.titleUsuarios));
         mRecyclerView = findViewById(R.id.recycler_cursosFld);
-
-
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+
+
+        spinner = (ProgressBar)findViewById(R.id.progress_bar);
+        spinner.setVisibility(View.VISIBLE);
+        int []photos = {R.drawable.bryan,R.drawable.user,R.drawable.fofo};
+        Bundle extras = getIntent().getExtras();
+        Usuario auxiliar = null;
+        if(extras!=null) {
+            auxiliar= (Usuario) getIntent().getSerializableExtra("editado");
+        }
+        AsyncTaskManager net = new AsyncTaskManager(auxiliar,photos,getResources(), new AsyncTaskManager.AsyncResponse() {
+            @Override
+            public void processFinish(String output) throws JSONException {
+                System.out.println(">><><><><><><><"+output);
+                JSONArray array = new JSONArray(output);
+                for (int i = 0; i < array.length(); i++) {
+                    Usuario c = new Usuario();
+                    String BytString = array.getJSONObject(i).getString("foto");
+                    byte[] bytes = BytString.getBytes();
+                    c.setFoto(bytes);
+                    c.setTelefono(array.getJSONObject(i).getString("telefono"));
+                    c.setCorreo(array.getJSONObject(i).getString("correo"));
+                    c.setNombre(array.getJSONObject(i).getString("nombre"));
+                    c.setContraseña(array.getJSONObject(i).getString("contraseña"));
+                    c.setCedula(array.getJSONObject(i).getString("cedula"));
+
+                    usuariosList.add(c);
+                }
+                mAdapter = new UsuarioAdapter(usuariosList, MainActivity.this);
+                mRecyclerView.setAdapter(mAdapter);
+                spinner.setVisibility(View.GONE);
+                mAdapter.notifyDataSetChanged();
+
+            }
+        });
+        net.execute();
 
 
         fab = findViewById(R.id.AddCurso);
@@ -66,20 +108,20 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         ItemTouchHelper.SimpleCallback itemTouchHelperCallback = new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT, this);
         new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(mRecyclerView);
         //usuariosList = new ArrayList<>();
-        Data d = null;
-        int []photos = {R.drawable.bryan,R.drawable.user,R.drawable.fofo};
-        try {
-            d = new Data(photos,getResources());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        usuariosList = d.getProfesorList();
-        intentInformation();
-        mAdapter = new UsuarioAdapter(usuariosList, MainActivity.this);
-        mRecyclerView.setAdapter(mAdapter);
 
-        mAdapter.notifyDataSetChanged();
         // whiteNotificationBar(mRecyclerView);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+
     }
 
     @Override
@@ -195,11 +237,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
                     break;
                 }
             }
-            if (founded) {
-                Toast.makeText(getApplicationContext(), auxiliar.getNombre() + " editado correctamente", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(getApplicationContext(), auxiliar.getNombre() + " no encontrado", Toast.LENGTH_LONG).show();
-            }
+
             String path = Environment.getExternalStorageDirectory() + "/imageBitmap" + ".png";
             Bitmap Icon = BitmapFactory.decodeFile(path);
 
@@ -210,5 +248,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             byte[] byteArray = stream.toByteArray();
             auxiliar.setFoto(byteArray);
         }
+    }
+    public void loadSccreen(){
+
+
+
+
     }
 }
