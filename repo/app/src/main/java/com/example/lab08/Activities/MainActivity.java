@@ -85,37 +85,43 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) throws IOException {
         Usuario aux = mAdapter.getSwipedItem(viewHolder.getAdapterPosition());
+        mAdapter.notifyDataSetChanged();
         if (direction == ItemTouchHelper.START) {
-
             //send data to Edit Activity
             Intent intent = new Intent(this, VerUsuario.class);
-            //intent.putExtra("user", aux);
-            //mAdapter.notifyDataSetChanged(); //restart left swipe view
-            startActivity(intent);
-        } else {
-
-            //send data to Edit Activity
-            Intent intent = new Intent(this, AddUpdUsuario.class);
-            intent.putExtra("editable", true);
-            if (Build.VERSION.SDK_INT >= 23)
-            {
-                if (checkPermission())
-                {
+            intent.putExtra("ver", true);
+            if (Build.VERSION.SDK_INT >= 23) {
+                if (checkPermission()) {
                     writeOnExternalStorage(aux);
                 } else {
                     requestPermission(); // Code for permission
                     writeOnExternalStorage(aux);
                 }
             }
-            else
-            {
-
+            else {
                 writeOnExternalStorage(aux);
             }
-
             aux.setFoto(null);
             intent.putExtra("user", aux);
-            mAdapter.notifyDataSetChanged(); //restart left swipe view
+            startActivity(intent);
+        } else {
+
+            //send data to Edit Activity
+            Intent intent = new Intent(this, AddUpdUsuario.class);
+            intent.putExtra("editable", true);
+            if (Build.VERSION.SDK_INT >= 23) {
+                if (checkPermission()) {
+                    writeOnExternalStorage(aux);
+                } else {
+                    requestPermission(); // Code for permission
+                    writeOnExternalStorage(aux);
+                }
+            }
+            else {
+                writeOnExternalStorage(aux);
+            }
+            aux.setFoto(null);
+            intent.putExtra("user", aux);
             startActivity(intent);
         }
     }
@@ -185,7 +191,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             Usuario auxiliar = (Usuario) getIntent().getSerializableExtra("editado");
             boolean founded = false;
             for (Usuario c1 : usuariosList) {
-                Toast.makeText(getApplicationContext(), auxiliar.getCedula() + " vs "+c1.getCedula(), Toast.LENGTH_LONG).show();
+                //Toast.makeText(getApplicationContext(), auxiliar.getCedula() + " vs "+c1.getCedula(), Toast.LENGTH_LONG).show();
                 if (c1.getCedula().equals(auxiliar.getCedula())) {
                     c1.setNombre(auxiliar.getNombre());
                     c1.setCorreo(auxiliar.getCorreo());

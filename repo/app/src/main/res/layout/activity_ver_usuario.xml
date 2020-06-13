@@ -142,7 +142,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="horizontal" >
+            android:orientation="horizontal">
 
             <ImageButton
                 android:id="@+id/text"
@@ -166,14 +166,15 @@
     </LinearLayout>
 
     <ImageButton
-        android:id="@+id/fotoBTN"
-        android:layout_width="77dp"
-        android:layout_height="61dp"
-        android:layout_marginStart="40dp"
-        android:layout_marginBottom="96dp"
-        android:tint="#FF0000"
+        android:id="@+id/salirBTN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="72dp"
+        android:layout_marginBottom="116dp"
+        android:backgroundTint="#FFFFFF"
+        android:tint="#FF0303"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
         app:layout_constraintStart_toEndOf="@+id/capturedImage"
-        app:srcCompat="@android:drawable/ic_menu_close_clear_cancel" />
+        app:srcCompat="@android:drawable/btn_dialog" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
