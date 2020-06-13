@@ -48,6 +48,7 @@ private String msjToSend;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_ver_usuario);
+        getSupportActionBar().setTitle(getString(R.string.titlecontacto));
 
         nombreFLD = findViewById(R.id.NombreFLD);
         cedulaFLD = findViewById(R.id.CedulaFLD);

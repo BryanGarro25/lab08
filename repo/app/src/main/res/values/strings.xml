@@ -4,4 +4,7 @@
     <string name="ver">VER</string>
     <string name="edit">EDITAR</string>
     <string name="titleUsuarios">Usuarios</string>
+    <string name="titlecontacto">Contacto</string>
+    <string name="actualizarcontacto">Actualizar contacto</string>
+    <string name="agregarcontacto">Actualizar contacto</string>
 </resources>

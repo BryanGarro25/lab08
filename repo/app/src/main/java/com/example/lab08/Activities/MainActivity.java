@@ -2,6 +2,7 @@ package com.example.lab08.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -19,6 +20,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.util.Log;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -54,6 +56,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         getSupportActionBar().setTitle(getString(R.string.titleUsuarios));
         mRecyclerView = findViewById(R.id.recycler_cursosFld);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -75,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         }
         usuariosList = d.getProfesorList();
         intentInformation();
-        mAdapter = new UsuarioAdapter(usuariosList, MainActivity.this);
+        mAdapter = new UsuarioAdapter(usuariosList, this);
         mRecyclerView.setAdapter(mAdapter);
 
         mAdapter.notifyDataSetChanged();
@@ -135,8 +139,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     }
     @Override
     public void onContactSelected(Usuario usuario){
-        Toast.makeText(getApplicationContext(), "Selected: " + usuario.getCedula() + ", " + usuario.getNombre(), Toast.LENGTH_LONG);
+        Toast.makeText(getApplicationContext(), "Selected: " + usuario.getCedula() + ", " + usuario.getNombre(), Toast.LENGTH_LONG).show();
     }
+
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (result == PackageManager.PERMISSION_GRANTED) {

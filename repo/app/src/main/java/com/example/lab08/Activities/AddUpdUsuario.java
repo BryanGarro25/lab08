@@ -69,6 +69,7 @@ public class AddUpdUsuario extends AppCompatActivity {
         if (extras != null) {
             editable = extras.getBoolean("editable");
             if (editable) {
+                getSupportActionBar().setTitle(getString(R.string.actualizarcontacto));
                 actual = (Usuario) getIntent().getSerializableExtra("user");
                 nombreFLD.setText(actual.getNombre());
                 cedulaFLD.setText(actual.getCedula());
@@ -85,6 +86,7 @@ public class AddUpdUsuario extends AppCompatActivity {
                     }
                 });
             } else {
+                getSupportActionBar().setTitle(getString(R.string.agregarcontacto));
                 confirmBTN.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
