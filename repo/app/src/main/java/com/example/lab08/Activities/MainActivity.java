@@ -108,14 +108,15 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         mAdapter.notifyDataSetChanged();
         // whiteNotificationBar(mRecyclerView);
     }
-//---------------------------- Moviemientos intent------------------------------------------------------------------
+//---------------------------- Moviemientos ------------------------------------------------------------------
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) throws IOException {
         Usuario aux = mAdapter.getSwipedItem(viewHolder.getAdapterPosition());
         this.aux = aux;
         mAdapter.notifyDataSetChanged();
         if (direction == ItemTouchHelper.START) {
-            //send data to Edit Activity
+            //----------------------------------------------------------------ver------------------------------------------
+
             AlertDialog.Builder mBuider = new AlertDialog.Builder(MainActivity.this);
             View view = getLayoutInflater().inflate(R.layout.activity_ver_usuario,null);
             mBuider.setView(view);
@@ -160,8 +161,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             });
 
             dialog.show();
+            //----------------------------------------------------------------ver------------------------------------------
         } else {
-
+            //----------------------------------------------------------------editar------------------------------------------
             //send data to Edit Activity
             Intent intent = new Intent(this, AddUpdUsuario.class);
             intent.putExtra("editable", true);
@@ -179,6 +181,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             aux.setFoto(null);
             intent.putExtra("user", aux);
             startActivity(intent);
+            //----------------------------------------------------------------editar------------------------------------------
         }
     }
     @Override
@@ -207,7 +210,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             UserSelected = usuario;
         }
     }
-    //---------------------------- Moviemientos intent------------------------------------------------------------------
+    //---------------------------- Moviemientos------------------------------------------------------------------
 
     //---------------------------- Manejo de DATA------------------------------------------------------------------
 
@@ -261,7 +264,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     }
 
     //---------------------------- Manejo de DATA------------------------------------------------------------------
-    
+
     //----------------------------------Permisos, llamadas, mensajes, sensores
     public void callPhoneNumber() {
         try {
@@ -285,7 +288,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
+    } //calls to UserSelected
     public void callPhoneNumber2() {
         try {
             if(Build.VERSION.SDK_INT > 22) {
@@ -308,7 +311,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         catch (Exception ex) {
             ex.printStackTrace();
         }
-    }
+    }// calls aux
     public void openDiolog(){
         AlertDialog.Builder mBuider = new AlertDialog.Builder(MainActivity.this);
         View view = getLayoutInflater().inflate(R.layout.sendmessege,null);
@@ -330,7 +333,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         });
 
         dialog.show();
-    }
+    } // abre el dialog de msj
     public void sendMSJ2(){
         Intent intent = new Intent(this, AddUpdUsuario.class);
         intent.putExtra("editable", true);
@@ -345,7 +348,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         else {
             sendMSJ(msjToSend);
         }
-    }
+    } // check or ask for mermissions then call sendMSJ
     private void requestPermission2() {
 
         if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.SEND_SMS)) {
@@ -353,7 +356,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         } else {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.SEND_SMS}, PERMISSION_REQUEST_CODE);
         }
-    }
+    } //permiso de sms
     private boolean checkPermission2() {
         int result = ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.SEND_SMS);
         if (result == PackageManager.PERMISSION_GRANTED) {
@@ -361,7 +364,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         } else {
             return false;
         }
-    }
+    }//permiso de sms
     private boolean checkPermission() {
         int result = ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
         if (result == PackageManager.PERMISSION_GRANTED) {
@@ -369,7 +372,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         } else {
             return false;
         }
-    }
+    } //escribir external storage permiso
     private void requestPermission() {
 
         if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
@@ -377,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         } else {
             ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
         }
-    }
+    } // read external storage permiso
     public void sendMSJ(String msg){
         try{
             SmsManager smgr = SmsManager.getDefault();
@@ -388,7 +391,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             Toast.makeText(MainActivity.this, "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
             e.printStackTrace();
         }
-    }
+    } //send mesegge to aux
     @Override
     public void onSensorChanged(SensorEvent event) {
         //Toast.makeText(getApplicationContext(), "llamar", Toast.LENGTH_LONG).show();
