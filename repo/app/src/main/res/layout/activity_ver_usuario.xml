@@ -8,8 +8,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/capturedImage"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
 
         android:layout_alignParentEnd="true"
 
@@ -168,8 +168,8 @@
         android:id="@+id/salirBTN"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="28dp"
-        android:layout_marginBottom="112dp"
+        android:layout_marginStart="52dp"
+        android:layout_marginBottom="108dp"
         android:backgroundTint="#FFFFFF"
         android:tint="#FF0303"
         app:layout_constraintBottom_toTopOf="@+id/linearLayout2"

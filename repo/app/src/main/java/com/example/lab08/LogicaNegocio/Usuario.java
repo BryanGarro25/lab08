@@ -8,7 +8,7 @@ public class Usuario implements Serializable{
     private String contraseña;
     private String nombre;
     private String cedula;
-    private byte[] foto;
+    private Bitmap foto;
     String telefono;
     public Usuario() {
         this.correo = "none";
@@ -17,7 +17,7 @@ public class Usuario implements Serializable{
         this.cedula = "none";
         this.foto = null;
     }
-    public Usuario(String contraseña, String nombre,String correo,String cedula, byte[] foto, String telefono) {
+    public Usuario(String contraseña, String nombre,String correo,String cedula, Bitmap foto, String telefono) {
         this.correo = correo;
         this.contraseña = contraseña;
         this.nombre = nombre;
@@ -50,11 +50,11 @@ public class Usuario implements Serializable{
 
     public void setCedula(String cedula) { this.cedula = cedula; }
 
-    public byte[] getFoto() {
+    public Bitmap getFoto() {
         return foto;
     }
 
-    public void setFoto(byte[] foto) {
+    public void setFoto(Bitmap foto) {
         this.foto = foto;
     }
 

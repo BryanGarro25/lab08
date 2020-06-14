@@ -8,8 +8,8 @@
 
     <de.hdodenhof.circleimageview.CircleImageView
         android:id="@+id/capturedImage"
-        android:layout_width="120dp"
-        android:layout_height="120dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
 
         android:layout_alignParentEnd="true"
 
@@ -50,7 +50,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/CedulaFLD"
-                android:layout_width="268dp"
+                android:layout_width="238dp"
                 android:layout_height="41dp"
                 android:hint="Cedula" />
 
@@ -75,7 +75,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/NombreFLD"
-                android:layout_width="268dp"
+                android:layout_width="238dp"
                 android:layout_height="41dp"
                 android:hint="Nombre" />
 
@@ -100,7 +100,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/EmailFLD"
-                android:layout_width="268dp"
+                android:layout_width="238dp"
                 android:layout_height="41dp"
                 android:hint="Email" />
 
@@ -124,7 +124,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/TelefonoFLD"
-                android:layout_width="268dp"
+                android:layout_width="238dp"
                 android:layout_height="41dp"
                 android:hint="Telefono" />
 
@@ -143,7 +143,7 @@
 
     <ImageButton
         android:id="@+id/fotoBTN"
-        android:layout_width="77dp"
+        android:layout_width="61dp"
         android:layout_height="61dp"
         android:layout_marginBottom="4dp"
         android:background="@drawable/circule_botton_white"
@@ -151,4 +151,15 @@
         app:layout_constraintStart_toEndOf="@+id/capturedImage"
         app:srcCompat="@android:drawable/ic_menu_camera" />
 
+    <ImageButton
+        android:id="@+id/salirBTNN"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="52dp"
+        android:layout_marginBottom="108dp"
+        android:backgroundTint="#FFFFFF"
+        android:tint="#FF0303"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+        app:layout_constraintStart_toEndOf="@+id/capturedImage"
+        app:srcCompat="@android:drawable/btn_dialog" />
 </androidx.constraintlayout.widget.ConstraintLayout>

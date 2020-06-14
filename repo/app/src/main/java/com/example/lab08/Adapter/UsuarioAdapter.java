@@ -75,8 +75,8 @@ public class UsuarioAdapter extends RecyclerView.Adapter<UsuarioAdapter.MyViewHo
         holder.titulo2.setText(profesor.getCorreo());
         holder.description.setText("Cedula " + profesor.getCedula());
         if(profesor.getFoto()!= null){
-            byte[] byteArray = profesor.getFoto();
-            Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+
+            Bitmap bmp = profesor.getFoto();
 
 
             holder.image.setImageBitmap(bmp);

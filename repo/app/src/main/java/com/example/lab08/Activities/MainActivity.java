@@ -32,6 +32,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.telephony.SmsManager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -80,7 +81,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         UserSelected = null;
         getSupportActionBar().setTitle(getString(R.string.titleUsuarios));
         mRecyclerView = findViewById(R.id.recycler_cursosFld);
-
+        fab = findViewById(R.id.AddCurso);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                agregarCurso();
+            }
+        });
         sm = (SensorManager)getSystemService(SENSOR_SERVICE);
         sensor = sm.getDefaultSensor(Sensor.TYPE_PROXIMITY);
         sm.registerListener(this,sensor,SensorManager.SENSOR_DELAY_NORMAL);
@@ -105,7 +112,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             e.printStackTrace();
         }
         usuariosList = d.getProfesorList();
-        intentInformation();
+
         mAdapter = new UsuarioAdapter(usuariosList, this);
         mRecyclerView.setAdapter(mAdapter);
 
@@ -132,8 +139,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             EditText DtelefonoFLD = view.findViewById(R.id.TelefonoFLD);
             ImageView DimageFLD = view.findViewById(R.id.capturedImage);
             if(aux.getFoto()!= null){
-                byte[] byteArray = aux.getFoto();
-                Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+
+                Bitmap bmp = aux.getFoto();
                 DimageFLD.setImageBitmap(bmp);
             }
             DnombreFLD.setText(aux.getNombre());
@@ -180,8 +187,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             final EditText DtelefonoFLD = view.findViewById(R.id.TelefonoFLD);
             ImageView DimageFLD = view.findViewById(R.id.capturedImage);
             if(aux.getFoto()!= null){
-                byte[] byteArray = aux.getFoto();
-                Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+
+                Bitmap bmp =aux.getFoto();
                 DimageFLD.setImageBitmap(bmp);
             }
             DnombreFLD.setText(aux.getNombre());
@@ -191,6 +198,14 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             DcedulaFLD.setEnabled(false);
             ImageButton confirmBTN = view.findViewById(R.id.ConfirmBTN);
             ImageButton ActfotoBTN = view.findViewById(R.id.fotoBTN);
+            ImageButton salirBTN = view.findViewById(R.id.salirBTNN);
+
+            salirBTN.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.hide();
+                }
+            });
             ActfotoBTNAux = DimageFLD;
             confirmBTN.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -204,10 +219,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
 
                             ByteArrayOutputStream stream = new ByteArrayOutputStream();
                             Bitmap bmp =  ((BitmapDrawable)ActfotoBTNAux.getDrawable()).getBitmap();
-                            bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                            byte[] byteArray = stream.toByteArray();
-                            bmp.recycle();
-                            c1.setFoto(byteArray);
+
+                            c1.setFoto(bmp);
 
                             break;
                         }
@@ -256,57 +269,97 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     //---------------------------- Moviemientos------------------------------------------------------------------
 
     //---------------------------- Manejo de DATA------------------------------------------------------------------
+    public void agregarCurso(){
+        AlertDialog.Builder mBuider = new AlertDialog.Builder(MainActivity.this);
+        View view = getLayoutInflater().inflate(R.layout.activity_add_upd_usuario,null);
+        mBuider.setView(view);
+        final AlertDialog dialog = mBuider.create();
+        final EditText DnombreFLD = view.findViewById(R.id.NombreFLD);
+        final EditText DcedulaFLD = view.findViewById(R.id.CedulaFLD);
+        final EditText DemailFLD = view.findViewById(R.id.EmailFLD);
+        final EditText DtelefonoFLD = view.findViewById(R.id.TelefonoFLD);
+        ImageView DimageFLD = view.findViewById(R.id.capturedImage);
 
-    public void writeOnExternalStorage(Usuario aux){
-        File file = new File(Environment.getExternalStorageDirectory() + "/imageBitmap" + ".png");
-        try (FileOutputStream fOut = new FileOutputStream(file)) {
-            byte[] byteArray = aux.getFoto();
-            Bitmap bitmap = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
-            if (!(bitmap.compress(Bitmap.CompressFormat.PNG, 85, fOut))) {
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 85, fOut);
-                fOut.flush();
-                fOut.close();
+
+        ImageButton confirmBTN = view.findViewById(R.id.ConfirmBTN);
+        ImageButton ActfotoBTN = view.findViewById(R.id.fotoBTN);
+        ImageButton salirBTN = view.findViewById(R.id.salirBTNN);
+
+        salirBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.hide();
             }
+        });
+        ActfotoBTNAux = DimageFLD;
+        confirmBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(validarForm(DcedulaFLD,DnombreFLD,DemailFLD,DtelefonoFLD)) {
+                    Usuario c1 = new Usuario();
+                    c1.setCedula(DcedulaFLD.getText().toString());
+                    c1.setNombre(DnombreFLD.getText().toString());
+                    c1.setCorreo(DemailFLD.getText().toString());
+                    c1.setTelefono(DtelefonoFLD.getText().toString());
 
-        }catch (IOException e){
-            e.printStackTrace();
-        }
-    }
-    public void intentInformation(){
-        Bundle extras = getIntent().getExtras();
-             // se esta editando un profesor
-        if(extras!=null) {
-            Usuario auxiliar = (Usuario) getIntent().getSerializableExtra("editado");
-            boolean founded = false;
-            for (Usuario c1 : usuariosList) {
-                //Toast.makeText(getApplicationContext(), auxiliar.getCedula() + " vs "+c1.getCedula(), Toast.LENGTH_LONG).show();
-                if (c1.getCedula().equals(auxiliar.getCedula())) {
-                    c1.setNombre(auxiliar.getNombre());
-                    c1.setCorreo(auxiliar.getCorreo());
-                    c1.setTelefono(auxiliar.getTelefono());
-                    auxiliar = c1;
-                    founded = true;
-                    break;
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    Bitmap bmp = ((BitmapDrawable) ActfotoBTNAux.getDrawable()).getBitmap();
+
+                    c1.setFoto(bmp);
+
+                    usuariosList.add(c1);
+                    mAdapter.notifyDataSetChanged();
+                    dialog.hide();
                 }
             }
-            if (founded) {
-                Toast.makeText(getApplicationContext(), auxiliar.getNombre() + " editado correctamente", Toast.LENGTH_LONG).show();
-            } else {
-                Toast.makeText(getApplicationContext(), auxiliar.getNombre() + " no encontrado", Toast.LENGTH_LONG).show();
+        });
+        ActfotoBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent cInt = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(cInt,Image_Capture_Code);
             }
-            String path = Environment.getExternalStorageDirectory() + "/imageBitmap" + ".png";
-            Bitmap Icon = BitmapFactory.decodeFile(path);
-
-            ByteArrayOutputStream stream = new ByteArrayOutputStream();
-            if (!(Icon.compress(Bitmap.CompressFormat.PNG, 100, stream))) {
-                Icon.compress(Bitmap.CompressFormat.JPEG, 100, stream);
-            }
-            byte[] byteArray = stream.toByteArray();
-            auxiliar.setFoto(byteArray);
-        }
+        });
+        dialog.show();
     }
+    public Boolean validarForm(EditText DcedulaFLD,EditText DnombreFLD,EditText DemailFLD,EditText DtelefonoFLD){
+        int error = 0;
+        if (TextUtils.isEmpty(DcedulaFLD.getText().toString())) {
+            DcedulaFLD.setError("Nombre requerido");
+            error++;
+        }
+        if (TextUtils.isEmpty(DnombreFLD.getText().toString())) {
+            DnombreFLD.setError("Codigo requerido");
+            error++;
+        }
+        if (TextUtils.isEmpty(DemailFLD.getText().toString())) {
+            DemailFLD.setError("Email requerido");
+            error++;
+        }
+        if (TextUtils.isEmpty(DtelefonoFLD.getText().toString())) {
+            DtelefonoFLD.setError("Telefono requerido");
+            error++;
+        }
+        if(exists(DcedulaFLD.getText().toString())){
+            DcedulaFLD.setError("Esta Cedula ya existe");
+            error++;
+        }
+        if (error > 0) {
 
+            return false;
+        }
+        return true;
+    }
+    public boolean exists(String cedula){
+        for (Usuario c1 : usuariosList)  {
+            if(c1.getCedula().equals(cedula)){
+                return true;
+            }
+        }
+        return false;
+    }
     //---------------------------- Manejo de DATA------------------------------------------------------------------
+
 
     //----------------------------------Permisos, llamadas, mensajes, sensores
     public void callPhoneNumber() {
