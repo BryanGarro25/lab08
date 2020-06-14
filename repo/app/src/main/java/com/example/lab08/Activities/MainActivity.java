@@ -12,10 +12,18 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -38,7 +46,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener, UsuarioAdapter.ProfesorAdapterListener {
+public class MainActivity extends AppCompatActivity implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener, UsuarioAdapter.ProfesorAdapterListener, SensorEventListener {
     private RecyclerView mRecyclerView;
     private UsuarioAdapter mAdapter;
     private List<Usuario> usuariosList;
@@ -46,18 +54,23 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     private SearchView searchView;
     private FloatingActionButton fab;
     private Data model;
+    private Usuario UserSelected;
     private static final int PERMISSION_REQUEST_CODE = 1;
+    SensorManager sm;
+    Sensor sensor;
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.coordinatorLayout = findViewById(R.id.coordinator_layout_usuario);
-
+        UserSelected = null;
         getSupportActionBar().setTitle(getString(R.string.titleUsuarios));
         mRecyclerView = findViewById(R.id.recycler_cursosFld);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        sm = (SensorManager)getSystemService(SENSOR_SERVICE);
+        sensor = sm.getDefaultSensor(Sensor.TYPE_PROXIMITY);
+        sm.registerListener(this,sensor,SensorManager.SENSOR_DELAY_NORMAL);
+
 
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -139,7 +152,21 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     }
     @Override
     public void onContactSelected(Usuario usuario){
-        Toast.makeText(getApplicationContext(), "Selected: " + usuario.getCedula() + ", " + usuario.getNombre(), Toast.LENGTH_LONG).show();
+        if(UserSelected != null) {
+            if(usuario.getCedula().equals(UserSelected.getCedula())) {
+                getSupportActionBar().setTitle(getString(R.string.titleUsuarios));
+                getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#6200EE")));
+                UserSelected=null;
+            }else{
+                getSupportActionBar().setTitle("Llamar a " + usuario.getNombre());
+                getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#388E3C")));
+                UserSelected = usuario;
+            }
+        }else{
+            getSupportActionBar().setTitle("Llamar a " + usuario.getNombre());
+            getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#388E3C")));
+            UserSelected = usuario;
+        }
     }
 
     private boolean checkPermission() {
@@ -220,6 +247,50 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             }
             byte[] byteArray = stream.toByteArray();
             auxiliar.setFoto(byteArray);
+        }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        //Toast.makeText(getApplicationContext(), "llamar", Toast.LENGTH_LONG).show();
+        if (event.values[0] == 0){
+
+            if(UserSelected!=null){
+                callPhoneNumber();
+                getSupportActionBar().setTitle(getString(R.string.titleUsuarios));
+                getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#6200EE")));
+                UserSelected=null;
+            }else{
+                Toast.makeText(getApplicationContext(), "Seleccione un contacto.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+    public void callPhoneNumber() {
+        try {
+            if(Build.VERSION.SDK_INT > 22) {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 101);
+                    return;
+                }
+
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:" + UserSelected.getTelefono()));
+                startActivity(callIntent);
+
+            }
+            else {
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:" + UserSelected.getTelefono()));
+                startActivity(callIntent);
+            }
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
         }
     }
 }
