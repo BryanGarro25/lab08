@@ -84,7 +84,7 @@ private String msjToSend;
                 call.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        callPhoneNumber();
+                        callPhoneNumber2();
                     }
                 });
                 text.setOnClickListener(new View.OnClickListener() {
@@ -101,7 +101,7 @@ private String msjToSend;
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }
-    public void callPhoneNumber() {
+    public void callPhoneNumber2() {
         try {
             if(Build.VERSION.SDK_INT > 22) {
                 if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
@@ -162,10 +162,10 @@ private String msjToSend;
       Intent intent = new Intent(this, AddUpdUsuario.class);
       intent.putExtra("editable", true);
       if (Build.VERSION.SDK_INT >= 23) {
-          if (checkPermission()) {
+          if (checkPermission2()) {
               sendMSJ(msjToSend);
           } else {
-              requestPermission(); // Code for permission
+              requestPermission2(); // Code for permission
               sendMSJ(msjToSend);
           }
       }
@@ -173,7 +173,7 @@ private String msjToSend;
           sendMSJ(msjToSend);
       }
   }
-    private void requestPermission() {
+    private void requestPermission2() {
 
         if (ActivityCompat.shouldShowRequestPermissionRationale(VerUsuario.this, Manifest.permission.SEND_SMS)) {
             Toast.makeText(VerUsuario.this, "Porfavor dar permisos de envio de mensajes.", Toast.LENGTH_LONG).show();
@@ -181,7 +181,7 @@ private String msjToSend;
             ActivityCompat.requestPermissions(VerUsuario.this, new String[]{android.Manifest.permission.SEND_SMS}, PERMISSION_REQUEST_CODE);
         }
     }
-    private boolean checkPermission() {
+    private boolean checkPermission2() {
         int result = ContextCompat.checkSelfPermission(VerUsuario.this, android.Manifest.permission.SEND_SMS);
         if (result == PackageManager.PERMISSION_GRANTED) {
             return true;

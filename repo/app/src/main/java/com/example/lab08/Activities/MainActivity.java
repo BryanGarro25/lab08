@@ -29,6 +29,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -62,9 +63,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     private FloatingActionButton fab;
     private Data model;
     private Usuario UserSelected;
+    private Usuario aux;
     private static final int PERMISSION_REQUEST_CODE = 1;
     SensorManager sm;
     Sensor sensor;
+    String msjToSend;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -105,10 +108,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         mAdapter.notifyDataSetChanged();
         // whiteNotificationBar(mRecyclerView);
     }
-
+//---------------------------- Moviemientos intent------------------------------------------------------------------
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) throws IOException {
         Usuario aux = mAdapter.getSwipedItem(viewHolder.getAdapterPosition());
+        this.aux = aux;
         mAdapter.notifyDataSetChanged();
         if (direction == ItemTouchHelper.START) {
             //send data to Edit Activity
@@ -145,13 +149,13 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             call.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    dialog.hide();
+                    callPhoneNumber2();
                 }
             });
             text.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    dialog.hide();
+                    openDiolog();
                 }
             });
 
@@ -203,37 +207,10 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             UserSelected = usuario;
         }
     }
+    //---------------------------- Moviemientos intent------------------------------------------------------------------
 
-    private boolean checkPermission() {
-        int result = ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        if (result == PackageManager.PERMISSION_GRANTED) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    //---------------------------- Manejo de DATA------------------------------------------------------------------
 
-    private void requestPermission() {
-
-        if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            Toast.makeText(MainActivity.this, "Write External Storage permission allows us to do store images. Please allow this permission in App Settings.", Toast.LENGTH_LONG).show();
-        } else {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSION_REQUEST_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Log.e("value", "Permission Granted, Now you can use local drive .");
-                } else {
-                    Log.e("value", "Permission Denied, You cannot use local drive .");
-                }
-                break;
-        }
-    }
     public void writeOnExternalStorage(Usuario aux){
         File file = new File(Environment.getExternalStorageDirectory() + "/imageBitmap" + ".png");
         try (FileOutputStream fOut = new FileOutputStream(file)) {
@@ -249,8 +226,6 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             e.printStackTrace();
         }
     }
-
-
     public void intentInformation(){
         Bundle extras = getIntent().getExtras();
              // se esta editando un profesor
@@ -285,26 +260,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         }
     }
 
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        //Toast.makeText(getApplicationContext(), "llamar", Toast.LENGTH_LONG).show();
-        if (event.values[0] == 0){
-
-            if(UserSelected!=null){
-                callPhoneNumber();
-                getSupportActionBar().setTitle(getString(R.string.titleUsuarios));
-                getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#6200EE")));
-                UserSelected=null;
-            }else{
-                Toast.makeText(getApplicationContext(), "Seleccione un contacto.", Toast.LENGTH_LONG).show();
-            }
-        }
-    }
-
-    @Override
-    public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
-    }
+    //---------------------------- Manejo de DATA------------------------------------------------------------------
+    
+    //----------------------------------Permisos, llamadas, mensajes, sensores
     public void callPhoneNumber() {
         try {
             if(Build.VERSION.SDK_INT > 22) {
@@ -326,6 +284,140 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         }
         catch (Exception ex) {
             ex.printStackTrace();
+        }
+    }
+    public void callPhoneNumber2() {
+        try {
+            if(Build.VERSION.SDK_INT > 22) {
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.CALL_PHONE}, 101);
+                    return;
+                }
+
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:" + aux.getTelefono()));
+                startActivity(callIntent);
+
+            }
+            else {
+                Intent callIntent = new Intent(Intent.ACTION_CALL);
+                callIntent.setData(Uri.parse("tel:" + aux.getTelefono()));
+                startActivity(callIntent);
+            }
+        }
+        catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+    public void openDiolog(){
+        AlertDialog.Builder mBuider = new AlertDialog.Builder(MainActivity.this);
+        View view = getLayoutInflater().inflate(R.layout.sendmessege,null);
+        mBuider.setView(view);
+        final AlertDialog dialog = mBuider.create();
+        final EditText Dmessege = (EditText) view.findViewById(R.id.msjText);
+        TextView NombreContacto = (TextView)view.findViewById(R.id.NombreContacto);
+        NombreContacto.setText("Mensaje para: "+aux.getNombre());
+        ImageButton DsendTxtBTN = (ImageButton) view.findViewById(R.id.sendTxtBTN);
+        DsendTxtBTN.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
+            @Override
+            public void onClick(View view) {
+                msjToSend = Dmessege.getText().toString();
+                sendMSJ2();
+                dialog.hide();
+
+            }
+        });
+
+        dialog.show();
+    }
+    public void sendMSJ2(){
+        Intent intent = new Intent(this, AddUpdUsuario.class);
+        intent.putExtra("editable", true);
+        if (Build.VERSION.SDK_INT >= 23) {
+            if (checkPermission2()) {
+                sendMSJ(msjToSend);
+            } else {
+                requestPermission2(); // Code for permission
+                sendMSJ(msjToSend);
+            }
+        }
+        else {
+            sendMSJ(msjToSend);
+        }
+    }
+    private void requestPermission2() {
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, Manifest.permission.SEND_SMS)) {
+            Toast.makeText(MainActivity.this, "Porfavor dar permisos de envio de mensajes.", Toast.LENGTH_LONG).show();
+        } else {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.SEND_SMS}, PERMISSION_REQUEST_CODE);
+        }
+    }
+    private boolean checkPermission2() {
+        int result = ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.SEND_SMS);
+        if (result == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    private boolean checkPermission() {
+        int result = ContextCompat.checkSelfPermission(MainActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (result == PackageManager.PERMISSION_GRANTED) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    private void requestPermission() {
+
+        if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, android.Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            Toast.makeText(MainActivity.this, "Write External Storage permission allows us to do store images. Please allow this permission in App Settings.", Toast.LENGTH_LONG).show();
+        } else {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
+        }
+    }
+    public void sendMSJ(String msg){
+        try{
+            SmsManager smgr = SmsManager.getDefault();
+            smgr.sendTextMessage(aux.getTelefono(),null,msg,null,null);
+            Toast.makeText(MainActivity.this, "SMS Sent Successfully", Toast.LENGTH_SHORT).show();
+        }
+        catch (Exception e){
+            Toast.makeText(MainActivity.this, "SMS Failed to Send, Please try again", Toast.LENGTH_SHORT).show();
+            e.printStackTrace();
+        }
+    }
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        //Toast.makeText(getApplicationContext(), "llamar", Toast.LENGTH_LONG).show();
+        if (event.values[0] == 0){
+
+            if(UserSelected!=null){
+                callPhoneNumber();
+                getSupportActionBar().setTitle(getString(R.string.titleUsuarios));
+                getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor("#6200EE")));
+                UserSelected=null;
+            }else{
+                Toast.makeText(getApplicationContext(), "Seleccione un contacto.", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSION_REQUEST_CODE:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Log.e("value", "Permission Granted, Now you can use local drive .");
+                } else {
+                    Log.e("value", "Permission Denied, You cannot use local drive .");
+                }
+                break;
         }
     }
 }
