@@ -50,7 +50,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/NombreFLD"
-                android:layout_width="268dp"
+                android:layout_width="238dp"
                 android:layout_height="41dp"
                 android:editable="false"
                 android:hint="Nombre" />
@@ -76,7 +76,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/CedulaFLD"
-                android:layout_width="268dp"
+                android:layout_width="238dp"
                 android:layout_height="41dp"
                 android:editable="false"
                 android:hint="Cedula" />
@@ -102,7 +102,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/EmailFLD"
-                android:layout_width="268dp"
+                android:layout_width="238dp"
                 android:layout_height="41dp"
                 android:editable="false"
                 android:hint="Email" />
@@ -127,7 +127,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/TelefonoFLD"
-                android:layout_width="268dp"
+                android:layout_width="238dp"
                 android:layout_height="41dp"
                 android:editable="false"
                 android:hint="Telefono" />
@@ -168,7 +168,7 @@
         android:id="@+id/salirBTN"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="64dp"
+        android:layout_marginStart="28dp"
         android:layout_marginBottom="112dp"
         android:backgroundTint="#FFFFFF"
         android:tint="#FF0303"

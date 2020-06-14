@@ -1,5 +1,7 @@
 package com.example.lab08.Activities;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -30,6 +32,11 @@ import android.os.Environment;
 import android.util.Log;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.lab08.Adapter.UsuarioAdapter;
@@ -105,22 +112,50 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         mAdapter.notifyDataSetChanged();
         if (direction == ItemTouchHelper.START) {
             //send data to Edit Activity
-            Intent intent = new Intent(this, VerUsuario.class);
-            intent.putExtra("ver", true);
-            if (Build.VERSION.SDK_INT >= 23) {
-                if (checkPermission()) {
-                    writeOnExternalStorage(aux);
-                } else {
-                    requestPermission(); // Code for permission
-                    writeOnExternalStorage(aux);
+            AlertDialog.Builder mBuider = new AlertDialog.Builder(MainActivity.this);
+            View view = getLayoutInflater().inflate(R.layout.activity_ver_usuario,null);
+            mBuider.setView(view);
+            final AlertDialog dialog = mBuider.create();
+
+            EditText DnombreFLD = view.findViewById(R.id.NombreFLD);
+            EditText DcedulaFLD = view.findViewById(R.id.CedulaFLD);
+            EditText DemailFLD = view.findViewById(R.id.EmailFLD);
+            EditText DtelefonoFLD = view.findViewById(R.id.TelefonoFLD);
+            ImageView DimageFLD = view.findViewById(R.id.capturedImage);
+            if(aux.getFoto()!= null){
+                byte[] byteArray = aux.getFoto();
+                Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                DimageFLD.setImageBitmap(bmp);
+            }
+            DnombreFLD.setText(aux.getNombre());
+            DcedulaFLD.setText(aux.getCedula());
+            DemailFLD.setText(aux.getCorreo());
+            DtelefonoFLD.setText(aux.getTelefono());
+
+            ImageButton text = view.findViewById(R.id.text);
+            ImageButton call = view.findViewById(R.id.call);
+            ImageButton salirBTN = view.findViewById(R.id.salirBTN);
+
+            salirBTN.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.hide();
                 }
-            }
-            else {
-                writeOnExternalStorage(aux);
-            }
-            aux.setFoto(null);
-            intent.putExtra("user", aux);
-            startActivity(intent);
+            });
+            call.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.hide();
+                }
+            });
+            text.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    dialog.hide();
+                }
+            });
+
+            dialog.show();
         } else {
 
             //send data to Edit Activity
