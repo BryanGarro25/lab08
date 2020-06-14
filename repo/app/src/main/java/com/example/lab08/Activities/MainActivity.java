@@ -20,6 +20,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -29,6 +30,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.provider.MediaStore;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.MenuInflater;
@@ -65,9 +67,11 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
     private Usuario UserSelected;
     private Usuario aux;
     private static final int PERMISSION_REQUEST_CODE = 1;
+    private static final int Image_Capture_Code = 1;
     SensorManager sm;
     Sensor sensor;
     String msjToSend;
+    ImageView ActfotoBTNAux;
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -111,7 +115,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
 //---------------------------- Moviemientos ------------------------------------------------------------------
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction, int position) throws IOException {
-        Usuario aux = mAdapter.getSwipedItem(viewHolder.getAdapterPosition());
+        final Usuario aux = mAdapter.getSwipedItem(viewHolder.getAdapterPosition());
         this.aux = aux;
         mAdapter.notifyDataSetChanged();
         if (direction == ItemTouchHelper.START) {
@@ -165,22 +169,61 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
         } else {
             //----------------------------------------------------------------editar------------------------------------------
             //send data to Edit Activity
-            Intent intent = new Intent(this, AddUpdUsuario.class);
-            intent.putExtra("editable", true);
-            if (Build.VERSION.SDK_INT >= 23) {
-                if (checkPermission()) {
-                    writeOnExternalStorage(aux);
-                } else {
-                    requestPermission(); // Code for permission
-                    writeOnExternalStorage(aux);
+            AlertDialog.Builder mBuider = new AlertDialog.Builder(MainActivity.this);
+            View view = getLayoutInflater().inflate(R.layout.activity_add_upd_usuario,null);
+            mBuider.setView(view);
+            final AlertDialog dialog = mBuider.create();
+
+            final EditText DnombreFLD = view.findViewById(R.id.NombreFLD);
+            final EditText DcedulaFLD = view.findViewById(R.id.CedulaFLD);
+            final EditText DemailFLD = view.findViewById(R.id.EmailFLD);
+            final EditText DtelefonoFLD = view.findViewById(R.id.TelefonoFLD);
+            ImageView DimageFLD = view.findViewById(R.id.capturedImage);
+            if(aux.getFoto()!= null){
+                byte[] byteArray = aux.getFoto();
+                Bitmap bmp = BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length);
+                DimageFLD.setImageBitmap(bmp);
+            }
+            DnombreFLD.setText(aux.getNombre());
+            DcedulaFLD.setText(aux.getCedula());
+            DemailFLD.setText(aux.getCorreo());
+            DtelefonoFLD.setText(aux.getTelefono());
+            DcedulaFLD.setEnabled(false);
+            ImageButton confirmBTN = view.findViewById(R.id.ConfirmBTN);
+            ImageButton ActfotoBTN = view.findViewById(R.id.fotoBTN);
+            ActfotoBTNAux = DimageFLD;
+            confirmBTN.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    for (Usuario c1 : usuariosList) {
+                        //Toast.makeText(getApplicationContext(), auxiliar.getCedula() + " vs "+c1.getCedula(), Toast.LENGTH_LONG).show();
+                        if (c1.getCedula().equals(DcedulaFLD.getText().toString())) {
+                            c1.setNombre(DnombreFLD.getText().toString());
+                            c1.setCorreo(DemailFLD.getText().toString());
+                            c1.setTelefono(DtelefonoFLD.getText().toString());
+
+                            ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                            Bitmap bmp =  ((BitmapDrawable)ActfotoBTNAux.getDrawable()).getBitmap();
+                            bmp.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                            byte[] byteArray = stream.toByteArray();
+                            bmp.recycle();
+                            c1.setFoto(byteArray);
+
+                            break;
+                        }
+                    }
+                    mAdapter.notifyDataSetChanged();
+                    dialog.hide();
                 }
-            }
-            else {
-                writeOnExternalStorage(aux);
-            }
-            aux.setFoto(null);
-            intent.putExtra("user", aux);
-            startActivity(intent);
+            });
+            ActfotoBTN.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent cInt = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    startActivityForResult(cInt,Image_Capture_Code);
+                }
+            });
+            dialog.show();
             //----------------------------------------------------------------editar------------------------------------------
         }
     }
@@ -392,6 +435,9 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
             e.printStackTrace();
         }
     } //send mesegge to aux
+
+
+
     @Override
     public void onSensorChanged(SensorEvent event) {
         //Toast.makeText(getApplicationContext(), "llamar", Toast.LENGTH_LONG).show();
@@ -421,6 +467,19 @@ public class MainActivity extends AppCompatActivity implements RecyclerItemTouch
                     Log.e("value", "Permission Denied, You cannot use local drive .");
                 }
                 break;
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Image_Capture_Code) {
+            if (resultCode == RESULT_OK) {
+                Bitmap bmp = (Bitmap) data.getExtras().get("data");
+                ActfotoBTNAux.setImageBitmap(bmp);
+
+            } else if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show();
+            }
         }
     }
 }
